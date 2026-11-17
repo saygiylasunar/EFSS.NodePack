@@ -73,3 +73,15 @@ test("escaping covers angle brackets, quotes and ampersands", () => {
   assert.equal(escapeHtml('<&>"' + "'"),
     "&lt;&amp;&gt;&quot;&#39;");
 });
+
+test("link attribute ampersands are escaped without corrupting the source label", () => {
+  const result = renderInline("[query](https://example.org/?a=1&b=2)");
+  assert.match(result, /href="https:\/\/example\.org\/\?a=1&amp;b=2"/);
+  assert.match(result, />query<\/a>/);
+});
+
+test("URL-like text without a Markdown link is never promoted into an anchor", () => {
+  const result = renderInline("javascript:alert(1) and <svg/onload=alert(1)>");
+  assert.ok(!result.includes("<a "));
+  assert.ok(!result.includes("<svg"));
+});
