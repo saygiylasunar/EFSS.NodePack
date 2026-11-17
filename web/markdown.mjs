@@ -25,7 +25,7 @@ export function renderInline(source) {
   text = text.replace(/\[([^\]\n]+)\]\((https?:\/\/[^\s()<>"']+)\)/gi,
     (match, label, url) =>
       /^https?:\/\//i.test(url)
-        ? protect('<a href="' + url + '" target="_blank" rel="noopener noreferrer">' + label + "</a>")
+        ? protect('<a href="' + url.replace(/&/g, "&amp;") + '" target="_blank" rel="noopener noreferrer">' + label + "</a>")
         : match
   );
 
