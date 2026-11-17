@@ -74,8 +74,9 @@ export function applyNodeIcon(node, iconId) {
 /** Draw a minimal glyph in Classic LiteGraph's title band. */
 export function drawNodeIcon(node, ctx) {
   const icon = getIcon(node);
-  if (!icon || !ctx || !Array.isArray(node?.size)) return false;
-  const width = Number(node.size[0]);
+  if (!icon || !ctx) return false;
+  // Modern LiteGraph may expose a typed array for node dimensions.
+  const width = Number(node?.renderingSize?.[0] ?? node?.size?.[0]);
   if (!Number.isFinite(width) || width < 70) return false;
   const x = width - 14;
   const y = -14;
