@@ -130,3 +130,23 @@ test("very narrow nodes skip icon rendering without crashing", () => {
   const node = { properties: { efssNodeIcon: "warning" }, size: [45, 85] };
   assert.equal(drawNodeIcon(node, {}), false);
 });
+
+
+test("renderer supports typed-array node dimensions used by LiteGraph", () => {
+  const calls = [];
+  const ctx = {
+    save() { calls.push("save"); },
+    restore() { calls.push("restore"); },
+    beginPath() {},
+    arc() {},
+    fill() {},
+    stroke() {},
+    fillText() { calls.push("icon"); },
+  };
+  const node = {
+    properties: { efssNodeIcon: "process" },
+    size: new Float32Array([180, 120]),
+  };
+  assert.equal(drawNodeIcon(node, ctx), true);
+  assert.deepEqual(calls, ["save", "icon", "restore"]);
+});
