@@ -85,3 +85,15 @@ test("URL-like text without a Markdown link is never promoted into an anchor", (
   assert.ok(!result.includes("<a "));
   assert.ok(!result.includes("<svg"));
 });
+
+test("invalid preview limits safely fall back to the default cap", () => {
+  assert.match(renderMarkdown("# Heading", Number.NaN), /<h1>Heading<\/h1>/);
+  assert.match(renderMarkdown("# Heading", Number.POSITIVE_INFINITY), /<h1>Heading<\/h1>/);
+  assert.match(renderMarkdown("# Heading", -1), /Preview shortened/);
+});
+
+test("preview length cap never modifies input or returned Python node source", () => {
+  const original = "x".repeat(200);
+  assert.match(renderMarkdown(original, 10), /Preview shortened/);
+  assert.equal(original.length, 200);
+});
