@@ -1,0 +1,165 @@
+/* EFSS Appearance styles: scoped entirely to our opt-in dialog. */
+.efss-appearance-dialog {
+  --efss-appearance-bg: #0d1420;
+  --efss-appearance-panel: #172637;
+  --efss-appearance-border: #36495d;
+  --efss-appearance-text: #edf4f8;
+  --efss-appearance-muted: #a3b8c5;
+  --efss-appearance-accent: #92ded6;
+  margin: auto;
+  width: min(570px, calc(100vw - 30px));
+  max-width: none;
+  max-height: calc(100vh - 30px);
+  overflow: auto;
+  box-sizing: border-box;
+  border: 1px solid var(--efss-appearance-border);
+  border-radius: 14px;
+  padding: 0;
+  background: var(--efss-appearance-bg);
+  color: var(--efss-appearance-text);
+  box-shadow: 0 23px 70px #02040abf;
+  font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+}
+.efss-appearance-dialog::backdrop { background: rgba(2, 6, 13, .75); }
+.efss-appearance-dialog *,
+.efss-appearance-dialog *::before,
+.efss-appearance-dialog *::after { box-sizing: border-box; }
+.efss-appearance-dialog button { font: inherit; }
+.efss-appearance-dialog button:focus-visible {
+  outline: 2px solid var(--efss-appearance-accent);
+  outline-offset: 2px;
+}
+.efss-appearance-header {
+  padding: 22px 24px 14px;
+  border-bottom: 1px solid var(--efss-appearance-border);
+}
+.efss-appearance-kicker {
+  color: var(--efss-appearance-accent);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: .17em;
+}
+.efss-appearance-header h2 {
+  margin: 5px 0 0;
+  font-size: 23px;
+  line-height: 1.3;
+  font-weight: 650;
+}
+.efss-appearance-main { padding: 14px 24px 20px; }
+.efss-appearance-node {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding: 9px 0 16px;
+  border-bottom: 1px solid #2b3d50;
+}
+.efss-appearance-node-name {
+  font-size: 13px;
+  font-weight: 640;
+  overflow-wrap: anywhere;
+}
+.efss-appearance-node-id {
+  border: 1px solid #476c74;
+  border-radius: 6px;
+  background: #1c393e;
+  color: #afe8e2;
+  padding: 3px 9px;
+  font: 12px ui-monospace, Consolas, monospace;
+  user-select: text;
+}
+.efss-appearance-fieldset {
+  display: block;
+  padding: 16px 0 10px;
+  margin: 0;
+  min-width: 0;
+  border: none;
+  border-bottom: 1px solid #2b3d50;
+}
+.efss-appearance-fieldset legend {
+  float: left;
+  width: 100%;
+  margin: 0 0 2px;
+  padding: 0;
+  font-size: 14px;
+  font-weight: 650;
+}
+.efss-appearance-hint {
+  clear: both;
+  margin: 4px 0 13px;
+  color: var(--efss-appearance-muted);
+  font-size: 12px;
+  line-height: 1.55;
+}
+.efss-appearance-options {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(116px, 1fr));
+  gap: 9px;
+  margin: 10px 0 4px;
+}
+.efss-appearance-swatch,
+.efss-appearance-icon {
+  min-height: 39px;
+  padding: 8px;
+  cursor: pointer;
+  border: 1px solid var(--efss-appearance-border);
+  border-radius: 7px;
+  text-align: center;
+  background: #142334;
+  color: var(--efss-appearance-text);
+  font-size: 12px;
+}
+.efss-appearance-swatch {
+  background: linear-gradient(90deg, var(--efss-swatch-color) 0 23%, var(--efss-swatch-bg) 23% 100%);
+  text-shadow: 0 1px 3px #000, 0 0 5px #000;
+  font-weight: 620;
+}
+.efss-appearance-swatch:hover,
+.efss-appearance-icon:hover { border-color: var(--efss-appearance-accent); }
+.efss-appearance-dialog [aria-pressed="true"] {
+  outline: 2px solid var(--efss-appearance-accent);
+  outline-offset: 1px;
+}
+.efss-appearance-id-info { margin-top: 18px; }
+.efss-appearance-id-info strong { color: #b6ede6; font-size: 13px; }
+.efss-appearance-id-info p {
+  margin: 7px 0 18px;
+  color: var(--efss-appearance-muted);
+  font-size: 12px;
+  line-height: 1.6;
+}
+.efss-appearance-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  padding-top: 14px;
+  border-top: 1px solid var(--efss-appearance-border);
+}
+.efss-appearance-status {
+  font-size: 11px;
+  color: var(--efss-appearance-muted);
+  flex: 1 1 180px;
+}
+.efss-appearance-buttons {
+  display: flex;
+  gap: 9px;
+  margin-left: auto;
+}
+.efss-appearance-button {
+  min-height: 35px;
+  border-radius: 8px;
+  border: 1px solid #526576;
+  padding: 8px 14px;
+  background: var(--efss-appearance-panel);
+  color: var(--efss-appearance-text);
+  font-weight: 600;
+  cursor: pointer;
+}
+.efss-appearance-primary {
+  border-color: var(--efss-appearance-accent);
+  background: var(--efss-appearance-accent);
+  color: #0a2729;
+}
