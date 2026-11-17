@@ -7,6 +7,7 @@ import { renderMarkdown } from "./markdown.mjs";
 
 const EXTENSION = "efss.nodepack.markdown";
 const CSS_ID = "efss-nodepack-styles";
+const openDialogs = new WeakMap();
 
 function loadStyles() {
   if (document.getElementById(CSS_ID)) return;
@@ -38,6 +39,11 @@ function originalNewlines(text, original) {
 }
 
 function openEditor(node) {
+  const existing = openDialogs.get(node);
+  if (existing?.isConnected) {
+    existing.focus();
+    return;
+  }
   loadStyles();
   const widgets = Array.isArray(node.widgets) ? node.widgets : [];
   const markdownWidget = widgets.find((widget) => widget.name === "markdown");
@@ -182,7 +188,11 @@ function openEditor(node) {
   shell.append(header, titleLabel, toolbar, region, footer);
   dialog.append(shell);
   document.body.append(dialog);
-  dialog.addEventListener("close", () => dialog.remove(), { once: true });
+  openDialogs.set(node, dialog);
+  dialog.addEventListener("close", () => {
+    openDialogs.delete(node);
+    dialog.remove();
+  }, { once: true });
   updatePreview();
   if (typeof dialog.showModal === "function") {
     dialog.showModal();
