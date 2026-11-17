@@ -20,6 +20,47 @@ Restart ComfyUI and hard-refresh the browser. Add **EFSS → Notes → EFSS Mark
 
 To use the optional theme, open **Settings → Appearance → Color Palette → Load** and select `themes/efss-midnight.json`. Theme selection is a separate, reversible action.
 
+## Node appearance: color presets, icons and #IDs
+
+EFSS.NodePack now includes an **optional node appearance dialog for all ordinary
+ComfyUI nodes**. Right-click a node → **EFSS · Node appearance…**.
+
+- **Node color:** choose **Noir**, **Teal**, **Azure**, **Amethyst**, **Amber**,
+  **Rose** or **Forest**. **Default** removes header/body color overrides.
+  The colors use native LiteGraph `node.color` and `node.bgcolor` fields, so
+  they persist in workflow JSON and still render without EFSS.NodePack installed.
+  Your pre-existing custom colors remain untouched until you choose a swatch.
+- **Node icon:** choose Note, Favorite, Model, Image, Output, Warning or Process,
+  or select None. Icons use an allowlisted Unicode glyph, with only the
+  selected icon ID stored as `node.properties.efssNodeIcon`. The icon is drawn
+  on the **Classic LiteGraph** title bar with a node-local drawing callback;
+  it does not edit node titles or patch global prototypes. **Nodes 2.0 / Vue
+  header rendering has not been verified and may not show these icons.**
+- **Node number:** the dialog displays the graph-local `#ID`. For a visible
+  ID badge directly on every node, use **ComfyUI's native Node ID badge**
+  option in its settings (search settings for *Node ID* or *node badges*).
+  The ID is the node's identifier in its graph, **not its execution position**
+  and not a global consecutive node count. This avoids a competing EFSS
+  overlay that would duplicate ComfyUI's built-in badge.
+
+Color and icon selections are applied only after **Apply**. **Cancel** leaves
+the node unchanged. Changes to the same node made outside the dialog while
+it is open trigger an overwrite warning. The two appearance features are
+independent of the Markdown node and optional Midnight theme.
+
+### Appearance compatibility notes
+
+- No extra Python package, external font pack, SVG fetch or CDNs.
+- No automatic recoloring, no global prototype modifications, no new widgets
+  on existing nodes. Icon rendering is installed only on nodes with an EFSS
+  icon, and the original per-instance title drawing callback is preserved.
+- Colors and icon metadata are serialized using standard workflow fields.
+  If EFSS.NodePack is absent, icon metadata remains inert, while native
+  node colors continue working. Existing workflow titles are untouched.
+- ComfyUI frontend versions can change appearance/context-menu hooks. Until
+  a live Classic + Nodes 2.0 smoke test passes, appearance UI remains
+  **integration-unverified**, although isolated JavaScript tests run in CI.
+
 ## Markdown scope (v0.1)
 
 The preview supports headings, paragraphs, inline **bold** / *italic* / ~~strike~~ / `code`, HTTPS/HTTP links, bullet and numbered lists, task lists, blockquotes, fenced code, horizontal separators and familiar `> [!NOTE]` / `> [!TIP]` / `> [!WARNING]` / `> [!IMPORTANT]` / `> [!CAUTION]` callouts.
@@ -34,6 +75,9 @@ The preview escapes source HTML, rejects unsafe links and never executes code, s
 __init__.py                    ComfyUI node registration, pure string passthrough
 web/efss_extension.js          Optional editor/context-menu extension
 web/markdown.mjs               Pure escape-first Markdown preview renderer
+web/decorations_extension.js   Optional per-node appearance dialog and Classic icon hook
+web/decorations.mjs             Pure color/icon model and rendering helpers
+web/decorations.css             Scoped appearance dialog CSS
 web/efss.css                   Scoped dialog CSS (no global theme overrides)
 themes/efss-midnight.json      Optional ComfyUI native palette
 tests/                         Python & Node built-in test suites
@@ -64,6 +108,9 @@ These checks must be performed in a running ComfyUI instance before declaring a 
 5. **Concurrency:** while the editor is open, modify the native widget; applying from the editor must refuse to overwrite the newer value.
 6. **Theme independence:** import `themes/efss-midnight.json`, change back to the previous palette, and verify the node still works without the theme.
 7. **Security:** preview HTML/script payloads and JavaScript URLs. Confirm they render as inert text, not executable markup.
+9. **Appearance:** select a Teal color preset, apply and reload workflow; confirm the saved `color` and `bgcolor`, then switch to Default and confirm native overrides clear. Cancel must not mutate color/icon.
+10. **Icons:** apply Note, then inspect the rendered title glyph in **Classic** and reload workflow. Confirm `efssNodeIcon` is saved under node `properties`, node title remains unchanged, and None removes it.
+11. **Node badges:** enable the built-in Node ID badge and verify `#ID` against the dialog. Verify clones/subgraphs get their own valid local node IDs. In Nodes 2.0, record whether icon rendering is supported instead of claiming compatibility.
 8. **Interoperability:** connect the STRING output to a compatible downstream STRING input and verify it receives the original Markdown.
 
 **Known limitation:** the editor's context-menu hook has not yet been verified against a real current ComfyUI frontend. A passing GitHub Actions workflow is not proof that the editor menu appears in the application. Do not label this release production-stable until this check passes.
