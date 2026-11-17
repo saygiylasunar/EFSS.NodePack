@@ -83,7 +83,10 @@ function renderList(lines, start, ordered) {
  */
 export function renderMarkdown(source, maxChars = 120000) {
   const original = String(source ?? "");
-  const cap = Math.max(0, Math.min(maxChars, 500000));
+  const requestedCap = Number(maxChars);
+  const cap = Number.isFinite(requestedCap)
+    ? Math.max(0, Math.min(Math.trunc(requestedCap), 500000))
+    : 120000;
   const truncated = original.length > cap;
   const text = original.slice(0, cap).replace(/\r\n?/g, "\n");
   const lines = text.split("\n");
