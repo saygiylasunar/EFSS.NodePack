@@ -148,9 +148,12 @@ function openAppearanceDialog(node) {
   const controls = element("div", "efss-appearance-buttons");
   const cancel = button("Cancel", "efss-appearance-button", () => dialog.close());
   const apply = button("Apply", "efss-appearance-button efss-appearance-primary", () => {
-    if (node.color !== initial.color || node.bgcolor !== initial.bgcolor ||
-        node.properties?.efssNodeIcon !== initial.icon) {
-      status.textContent = "Node appearance changed elsewhere. Close and reopen.";
+    // Only guard fields that this dialog intends to write. An unrelated
+    // appearance update must not block a legitimate independent edit.
+    if ((colorTouched && (node.color !== initial.color ||
+        node.bgcolor !== initial.bgcolor)) ||
+        (iconTouched && node.properties?.efssNodeIcon !== initial.icon)) {
+      status.textContent = "Selected appearance changed elsewhere. Close and reopen.";
       return;
     }
     if (!colorTouched && !iconTouched) {
