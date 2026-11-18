@@ -12,11 +12,17 @@ export function escapeHtml(value) {
 
 export function renderInline(source) {
   const protectedFragments = [];
+  // The source may contain literal private-use codepoints. Choose a token
+  // delimiter absent from it so authored text cannot impersonate placeholders.
+  const input = String(source);
+  let sentinel = "\uE000";
+  while (input.includes(sentinel)) sentinel += "\uE000";
+  const tokenPattern = new RegExp(sentinel + "(\\d+)" + sentinel, "g");
   const protect = (html) => {
     const index = protectedFragments.push(html) - 1;
-    return "\uE000" + index + "\uE001";
+    return sentinel + index + sentinel;
   };
-  let text = escapeHtml(source);
+  let text = escapeHtml(input);
 
   // Protected tokens prevent formatting inside links and code spans.
   text = text.replace(/(\x60+)([^\n]*?)\1/g, (_, marks, code) =>
@@ -35,7 +41,7 @@ export function renderInline(source) {
   text = text.replace(/(^|[^*])\*([^*\n]+)\*(?!\*)/g, "$1<em>$2</em>");
   text = text.replace(/(^|[^_])_([^_\n]+)_(?!_)/g, "$1<em>$2</em>");
 
-  return text.replace(/\uE000(\d+)\uE001/g, (match, index) =>
+  return text.replace(tokenPattern, (match, index) =>
     protectedFragments[Number(index)] ?? match
   );
 }
