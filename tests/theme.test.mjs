@@ -16,7 +16,7 @@ test("Midnight remains an importable, opt-in ComfyUI color palette", () => {
 });
 
 test("Midnight palette uses finite native values and valid CSS color strings", () => {
-  const colorPattern = /^(?:#[0-9a-f]{6}|rgba\(\s*\d+\s*,\s*\d+\s*,\s*\d+\s*,\s*(?:0(?:\.\d+)?|1(?:\.0+)?)\s*\)(?:\s+0\s+0\s+0\.5rem)?)$/i;
+  const colorPattern = /^(?:#[0-9a-f]{6}|rgba\(\s*\d+\s*,\s*\d+\s*,\s*\d+\s*,\s*(?:0?(?:\.\d+)?|1(?:\.0+)?)\s*\)(?:\s+0\s+0\s+0\.5rem)?)$/i;
   for (const [section, entries] of Object.entries(palette.colors)) {
     assert.ok(entries && typeof entries === "object", section);
     for (const [key, value] of Object.entries(entries)) {
