@@ -97,3 +97,23 @@ test("preview length cap never modifies input or returned Python node source", (
   assert.match(renderMarkdown(original, 10), /Preview shortened/);
   assert.equal(original.length, 200);
 });
+
+test("literal private-use placeholders cannot substitute protected inline HTML", () => {
+  const fake = "\uE0000\uE001";
+  const input = "[safe](https://example.org/) " + fake + " `<img src=x>`";
+  const output = renderInline(input);
+  assert.equal((output.match(/<a /g) ?? []).length, 1);
+  assert.equal((output.match(/<code>/g) ?? []).length, 1);
+  assert.ok(output.includes(fake));
+  assert.ok(output.includes("&lt;img src=x&gt;"));
+  assert.ok(!output.includes("<img "));
+});
+
+test("private-use characters in Markdown source survive safe preview rendering", () => {
+  const input = "\uE000\uE001 **bold** [link](https://example.org/)";
+  const output = renderMarkdown(input);
+  assert.ok(output.includes("\uE000\uE001"));
+  assert.match(output, /<strong>bold<\/strong>/);
+  assert.match(output, /<a href="https:\/\/example.org\/"/);
+  assert.equal(input, "\uE000\uE001 **bold** [link](https://example.org/)");
+});
