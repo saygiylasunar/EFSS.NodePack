@@ -150,3 +150,30 @@ test("renderer supports typed-array node dimensions used by LiteGraph", () => {
   assert.equal(drawNodeIcon(node, ctx), true);
   assert.deepEqual(calls, ["save", "icon", "restore"]);
 });
+
+test("renderingSize overrides stale size when LiteGraph provides both", () => {
+  let arcX = null;
+  const ctx = {
+    save() {}, restore() {}, beginPath() {},
+    arc(x) { arcX = x; }, fill() {}, stroke() {}, fillText() {},
+  };
+  const node = {
+    properties: { efssNodeIcon: "note" },
+    size: [80, 80],
+    renderingSize: new Float32Array([240, 120]),
+  };
+  assert.equal(drawNodeIcon(node, ctx), true);
+  assert.equal(arcX, 226);
+});
+
+test("renderer always restores canvas state after a drawing failure", () => {
+  let restored = false;
+  const ctx = {
+    save() {}, restore() { restored = true; },
+    beginPath() { throw new Error("canvas lost"); },
+  };
+  assert.throws(() => drawNodeIcon({
+    size: [150, 100], properties: { efssNodeIcon: "star" },
+  }, ctx), /canvas lost/);
+  assert.equal(restored, true);
+});
