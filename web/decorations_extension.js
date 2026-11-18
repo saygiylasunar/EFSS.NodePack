@@ -156,14 +156,22 @@ function openAppearanceDialog(node) {
       status.textContent = "Selected appearance changed elsewhere. Close and reopen.";
       return;
     }
-    if (!colorTouched && !iconTouched) {
+    // Re-selecting the current preset/icon is not a workflow change.
+    const changeColor = colorTouched && (
+      draftColor === null
+        ? node.color !== undefined || node.bgcolor !== undefined
+        : getColorPreset(node)?.id !== draftColor
+    );
+    const changeIcon = iconTouched &&
+      (node.properties?.efssNodeIcon ?? "") !== (draftIcon ?? "");
+    if (!changeColor && !changeIcon) {
       dialog.close();
       return;
     }
     node.graph?.beforeChange?.(node);
     try {
-      if (colorTouched) applyColorPreset(node, draftColor);
-      if (iconTouched) {
+      if (changeColor) applyColorPreset(node, draftColor);
+      if (changeIcon) {
         applyNodeIcon(node, draftIcon);
         installIconRenderer(node);
       }
