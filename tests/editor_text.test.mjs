@@ -33,3 +33,18 @@ test("prefix operation does not interpret or strip unsupported EFSS syntax", () 
   assert.equal(prefixSelectedLines(source, "> "), "> {{efss:unknown}}\r\n> <script>not executed</script>\r\n> 🧪");
   assert.equal(source, "{{efss:unknown}}\r\n<script>not executed</script>\r\n🧪");
 });
+
+
+test("multiline callout toolbar prefixes do not introduce mixed line endings", () => {
+  const original = "first\r\nsecond";
+  const result = prefixSelectedLines(original, "> [!NOTE]\n> ");
+  assert.equal(result, "> [!NOTE]\r\n> first\r\n> [!NOTE]\r\n> second");
+  assert.ok(!/(?<!\r)\n/.test(result));
+});
+
+test("LF-only callout toolbar prefixes remain LF-only", () => {
+  assert.equal(
+    prefixSelectedLines("first\nsecond", "> [!NOTE]\n> "),
+    "> [!NOTE]\n> first\n> [!NOTE]\n> second"
+  );
+});
