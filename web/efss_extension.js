@@ -4,6 +4,7 @@
  */
 import { app } from "../../scripts/app.js";
 import { renderMarkdown } from "./markdown.mjs";
+import { originalNewlines, prefixSelectedLines } from "./editor_text.mjs";
 
 const EXTENSION = "efss.nodepack.markdown";
 const CSS_ID = "efss-nodepack-styles";
@@ -30,12 +31,6 @@ function makeButton(text, callback, className = "") {
   button.type = "button";
   button.addEventListener("click", callback);
   return button;
-}
-
-function originalNewlines(text, original) {
-  // Restore consistent CRLF documents after edits; untouched input never changes.
-  const usesCRLF = original.includes("\r\n") && !/(?<!\r)\n/.test(original);
-  return usesCRLF ? text.replace(/\r?\n/g, "\r\n") : text;
 }
 
 function openEditor(node) {
@@ -149,7 +144,7 @@ function openEditor(node) {
     const begin = sourceInput.selectionStart;
     const end = sourceInput.selectionEnd;
     const value = sourceInput.value.slice(begin, end) || placeholder;
-    const changed = value.split("\n").map((line) => prefix + line).join("\n");
+    const changed = prefixSelectedLines(value, prefix);
     sourceInput.setRangeText(changed, begin, end, "end");
     sourceInput.focus();
     sourceInput.setSelectionRange(begin, begin + changed.length);
