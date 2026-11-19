@@ -15,5 +15,11 @@ export function originalNewlines(text, original) {
  * This is an editor-only transform, not a Markdown serialization step.
  */
 export function prefixSelectedLines(selection, prefix) {
-  return String(selection).replace(/(^|\r\n|\r|\n)/g, (newline) => newline + prefix);
+  const source = String(selection);
+  // Toolbar callout prefixes contain embedded newlines. Match the selected
+  // document's convention instead of introducing mixed endings.
+  const newline = source.includes("\r\n") ? "\r\n" :
+    source.includes("\r") && !source.includes("\n") ? "\r" : "\n";
+  const adaptedPrefix = String(prefix).replace(/\r\n|\r|\n/g, newline);
+  return source.replace(/(^|\r\n|\r|\n)/g, (boundary) => boundary + adaptedPrefix);
 }
