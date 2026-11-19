@@ -95,20 +95,24 @@ function openEditor(node) {
       status.textContent = "Note changed elsewhere. Close and reopen to avoid overwriting it.";
       return;
     }
-    if (sourceTouched) {
-      const next = originalNewlines(sourceInput.value, initialMarkdown);
+    const next = sourceTouched
+      ? originalNewlines(sourceInput.value, initialMarkdown)
+      : initialMarkdown;
+    const markdownChanged = next !== initialMarkdown;
+    const titleChanged = Boolean(titleWidget && titleInput.value !== initialTitle);
+    if (markdownChanged) {
       const prior = markdownWidget.value;
       markdownWidget.value = next;
       markdownWidget.callback?.(next);
       node.onWidgetChanged?.("markdown", next, prior, markdownWidget);
     }
-    if (titleWidget && titleInput.value !== initialTitle) {
+    if (titleChanged) {
       const prior = titleWidget.value;
       titleWidget.value = titleInput.value;
       titleWidget.callback?.(titleWidget.value);
       node.onWidgetChanged?.("title", titleWidget.value, prior, titleWidget);
     }
-    if (sourceTouched || titleInput.value !== initialTitle) {
+    if (markdownChanged || titleChanged) {
       node.setDirtyCanvas?.(true, true);
       app.graph?.change?.();
     }
