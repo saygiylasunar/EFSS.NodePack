@@ -29,6 +29,7 @@ jobs:
         run: |
           node --check web/efss_extension.js
           node --check web/markdown.mjs
+          node --check web/editor_text.mjs
           node --check web/decorations_extension.js
           node --check web/decorations.mjs
       - name: Markdown preview tests
