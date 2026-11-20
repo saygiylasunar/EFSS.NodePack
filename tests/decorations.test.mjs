@@ -2,7 +2,7 @@ import assert from "node:assert/strict";
 import test from "node:test";
 import {
   COLOR_PRESETS, ICON_PRESETS, nodeIdLabel, getIcon, getColorPreset,
-  applyColorPreset, applyNodeIcon, drawNodeIcon,
+  applyColorPreset, applyNodeIcon, drawNodeIcon, appearanceConflict,
 } from "../web/decorations.mjs";
 
 function fixture() {
@@ -176,4 +176,25 @@ test("renderer always restores canvas state after a drawing failure", () => {
     size: [150, 100], properties: { efssNodeIcon: "star" },
   }, ctx), /canvas lost/);
   assert.equal(restored, true);
+});
+
+test("appearance conflicts ignore unrelated edits and protect selected native fields", () => {
+  const node = fixture();
+  const initial = {
+    color: node.color, bgcolor: node.bgcolor,
+    icon: node.properties.efssNodeIcon,
+  };
+  node.properties.efssNodeIcon = "note";
+  assert.equal(appearanceConflict(node, initial, { color: true }), false);
+  assert.equal(appearanceConflict(node, initial, { icon: true }), true);
+  assert.equal(appearanceConflict(node, initial, {}), false);
+  node.color = "#123456";
+  assert.equal(appearanceConflict(node, initial, { color: true }), true);
+  assert.equal(appearanceConflict(node, initial, { icon: true }), true);
+});
+
+test("appearance conflicts fail closed on missing node snapshots", () => {
+  assert.equal(appearanceConflict(null, {}, { color: true }), true);
+  assert.equal(appearanceConflict({}, null, { icon: true }), true);
+  assert.equal(appearanceConflict({ color: "#000" }, { color: "#111" }, { color: true }), true);
 });
