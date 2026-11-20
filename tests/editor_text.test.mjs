@@ -48,3 +48,20 @@ test("LF-only callout toolbar prefixes remain LF-only", () => {
     "> [!NOTE]\n> first\n> [!NOTE]\n> second"
   );
 });
+
+test("standalone CR documents recover original line endings after textarea edits", () => {
+  const source = "# Old\rParagraph\r";
+  assert.equal(originalNewlines("# New\nParagraph\n", source), "# New\rParagraph\r");
+  assert.equal(originalNewlines(source, source), source);
+});
+
+test("mixed CRLF, standalone CR and LF documents are never normalized wholesale", () => {
+  const source = "one\r\ntwo\rthree\nfour";
+  assert.equal(originalNewlines(source, source), source);
+  assert.equal(originalNewlines("changed\none\rtwo", source), "changed\none\rtwo");
+});
+
+test("uniform LF and no-newline sources do not gain synthetic CR characters", () => {
+  assert.equal(originalNewlines("one\ntwo", "old\ntext"), "one\ntwo");
+  assert.equal(originalNewlines("new", "old"), "new");
+});
