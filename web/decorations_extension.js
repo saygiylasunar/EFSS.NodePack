@@ -6,6 +6,7 @@ import { app } from "../../scripts/app.js";
 import {
   COLOR_PRESETS, ICON_PRESETS, nodeIdLabel, getIcon,
   getColorPreset, applyColorPreset, applyNodeIcon, drawNodeIcon,
+  appearanceConflict,
 } from "./decorations.mjs";
 
 const installed = new WeakSet();
@@ -150,9 +151,9 @@ function openAppearanceDialog(node) {
   const apply = button("Apply", "efss-appearance-button efss-appearance-primary", () => {
     // Only guard fields that this dialog intends to write. An unrelated
     // appearance update must not block a legitimate independent edit.
-    if ((colorTouched && (node.color !== initial.color ||
-        node.bgcolor !== initial.bgcolor)) ||
-        (iconTouched && node.properties?.efssNodeIcon !== initial.icon)) {
+    if (appearanceConflict(node, initial, {
+      color: colorTouched, icon: iconTouched,
+    })) {
       status.textContent = "Selected appearance changed elsewhere. Close and reopen.";
       return;
     }
