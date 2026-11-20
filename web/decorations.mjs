@@ -102,3 +102,15 @@ export function drawNodeIcon(node, ctx) {
   }
   return true;
 }
+
+/**
+ * Optimistic conflict guard for appearance edits. Only selected fields count:
+ * concurrent icon changes do not invalidate a color-only edit and vice versa.
+ */
+export function appearanceConflict(node, initial, { color = false, icon = false } = {}) {
+  if (!node || !initial) return true;
+  return Boolean(
+    (color && (node.color !== initial.color || node.bgcolor !== initial.bgcolor)) ||
+    (icon && node.properties?.efssNodeIcon !== initial.icon)
+  );
+}
