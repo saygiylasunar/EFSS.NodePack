@@ -5,9 +5,16 @@
 export function originalNewlines(text, original) {
   const source = String(original);
   const updated = String(text);
-  // Only normalize documents with consistent CRLF line endings.
-  const usesCRLF = source.includes("\r\n") && !/(?<!\r)\n/.test(source);
-  return usesCRLF ? updated.replace(/\r?\n/g, "\r\n") : updated;
+  // Textarea editing commonly normalizes CRLF and standalone CR to LF.
+  // Restore the original convention only for uniform-source documents;
+  // mixed newline documents must never be silently rewritten.
+  const boundaries = source.match(/\r\n|\r|\n/g) ?? [];
+  if (boundaries.length === 0) return updated;
+  const convention = boundaries[0];
+  if (convention === "\n" || !boundaries.every((item) => item === convention)) {
+    return updated;
+  }
+  return updated.replace(/\r\n|\r|\n/g, convention);
 }
 
 /**
