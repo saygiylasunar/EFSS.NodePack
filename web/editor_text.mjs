@@ -30,3 +30,33 @@ export function prefixSelectedLines(selection, prefix) {
   const adaptedPrefix = String(prefix).replace(/\r\n|\r|\n/g, newline);
   return source.replace(/(^|\r\n|\r|\n)/g, (boundary) => boundary + adaptedPrefix);
 }
+
+
+/**
+ * Normalize textarea content without destroying the original newline map.
+ * Browser textareas expose CRLF and CR as LF; unchanged logical boundaries
+ * should retain their original bytes even in a mixed-ending document.
+ * If line boundaries were added or removed, leave the edited text unchanged
+ * instead of guessing where historical CRLF/CR boundaries belonged.
+ */
+export function preserveMixedNewlines(text, original) {
+  const updated = String(text);
+  const source = String(original);
+  const endings = source.match(/\r\n|\r|\n/g) ?? [];
+  if (!endings.length || endings.every((ending) => ending === endings[0])) {
+    return originalNewlines(updated, source);
+  }
+  const sourceLines = source.split(/\r\n|\r|\n/);
+  const updatedLines = updated.split(/\r\n|\r|\n/);
+  if (sourceLines.length !== updatedLines.length) return updated;
+  // If a line boundary moves (a split/merge), its original terminator no
+  // longer has a reliable position. Only restore on stable line boundaries.
+  const safe = sourceLines.every((line, index) =>
+    index === sourceLines.length - 1 ||
+    (line.length === 0 ? updatedLines[index].length === 0 : true)
+  );
+  if (!safe) return updated;
+  return updatedLines.map((line, index) =>
+    line + (index < endings.length ? endings[index] : "")
+  ).join("");
+}
