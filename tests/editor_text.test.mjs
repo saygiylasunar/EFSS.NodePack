@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import test from "node:test";
-import { originalNewlines, prefixSelectedLines } from "../web/editor_text.mjs";
+import { originalNewlines, prefixSelectedLines, preserveMixedNewlines } from "../web/editor_text.mjs";
 
 test("unchanged CRLF source survives editor round trip", () => {
   const original = "# Heading\r\n\r\n> [!NOTE]\r\n> Text\r\n";
@@ -64,4 +64,23 @@ test("mixed CRLF, standalone CR and LF documents are never normalized wholesale"
 test("uniform LF and no-newline sources do not gain synthetic CR characters", () => {
   assert.equal(originalNewlines("one\ntwo", "old\ntext"), "one\ntwo");
   assert.equal(originalNewlines("new", "old"), "new");
+});
+
+
+test("mixed line endings survive a textarea edit with stable line boundaries", () => {
+  const source = "alpha\r\nbeta\rgamma\nomega";
+  const edited = "alpha\nBETA\ngamma\nomega";
+  assert.equal(preserveMixedNewlines(edited, source), "alpha\r\nBETA\rgamma\nomega");
+});
+
+test("mixed line endings are not guessed after insertion or deletion of lines", () => {
+  const source = "alpha\r\nbeta\rgamma\nomega";
+  const edited = "alpha\nnew\nbeta\ngamma\nomega";
+  assert.equal(preserveMixedNewlines(edited, source), edited);
+  assert.equal(preserveMixedNewlines("alpha\nomega", source), "alpha\nomega");
+});
+
+test("uniform line endings and empty source retain existing behavior", () => {
+  assert.equal(preserveMixedNewlines("a\nB\n", "a\r\nb\r\n"), "a\r\nB\r\n");
+  assert.equal(preserveMixedNewlines("new", ""), "new");
 });
