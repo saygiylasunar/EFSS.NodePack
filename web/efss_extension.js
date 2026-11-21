@@ -4,7 +4,7 @@
  */
 import { app } from "../../scripts/app.js";
 import { renderMarkdown } from "./markdown.mjs";
-import { originalNewlines, prefixSelectedLines } from "./editor_text.mjs";
+import { preserveMixedNewlines, prefixSelectedLines } from "./editor_text.mjs";
 
 const EXTENSION = "efss.nodepack.markdown";
 const CSS_ID = "efss-nodepack-styles";
@@ -96,7 +96,7 @@ function openEditor(node) {
       return;
     }
     const next = sourceTouched
-      ? originalNewlines(sourceInput.value, initialMarkdown)
+      ? preserveMixedNewlines(sourceInput.value, initialMarkdown)
       : initialMarkdown;
     const markdownChanged = next !== initialMarkdown;
     const titleChanged = Boolean(titleWidget && titleInput.value !== initialTitle);
