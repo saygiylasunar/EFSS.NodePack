@@ -84,3 +84,15 @@ test("uniform line endings and empty source retain existing behavior", () => {
   assert.equal(preserveMixedNewlines("a\nB\n", "a\r\nb\r\n"), "a\r\nB\r\n");
   assert.equal(preserveMixedNewlines("new", ""), "new");
 });
+
+
+test("terminal newline selections do not create an extra empty list item", () => {
+  assert.equal(prefixSelectedLines("one\n", "- "), "- one\n");
+  assert.equal(prefixSelectedLines("one\r\n", "> "), "> one\r\n");
+  assert.equal(prefixSelectedLines("one\r", "## "), "## one\r");
+  assert.equal(prefixSelectedLines("", "- "), "");
+});
+
+test("intentional internal empty lines still receive Markdown prefixes", () => {
+  assert.equal(prefixSelectedLines("one\n\ntwo", "> "), "> one\n> \n> two");
+});
