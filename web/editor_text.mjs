@@ -30,8 +30,10 @@ export function prefixSelectedLines(selection, prefix) {
   const adaptedPrefix = String(prefix).replace(/\r\n|\r|\n/g, newline);
   // A selection ending in a newline has no final content line to prefix.
   // Avoid appending a dangling Markdown marker outside the selected lines.
-  return source.replace(/(^|\r\n|\r|\n)(?=[\s\S])/g,
-    (boundary) => boundary + adaptedPrefix);
+  if (!source) return source;
+  return adaptedPrefix + source.replace(/\r\n|\r|\n/g,
+    (boundary, offset) => boundary +
+      (offset + boundary.length < source.length ? adaptedPrefix : ""));
 }
 
 
