@@ -64,6 +64,17 @@ export function preserveMixedNewlines(text, original) {
   const sourceLines = source.split(/\r\n|\r|\n/);
   const updatedLines = updated.split(/\r\n|\r|\n/);
   if (sourceLines.length !== updatedLines.length) return updated;
+  // Matching line counts alone do not prove matching boundaries. If an
+  // unchanged line has moved to another index, historical terminators cannot
+  // safely be assigned to the new positions.
+  const positions = new Map();
+  sourceLines.forEach((line, index) => {
+    if (!positions.has(line)) positions.set(line, []);
+    positions.get(line).push(index);
+  });
+  if (updatedLines.some((line, index) =>
+    positions.has(line) && !positions.get(line).includes(index)
+  )) return updated;
   // If a line boundary moves (a split/merge), its original terminator no
   // longer has a reliable position. Only restore on stable line boundaries.
   const safe = sourceLines.every((line, index) =>
