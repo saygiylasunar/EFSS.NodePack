@@ -96,3 +96,18 @@ test("terminal newline selections do not create an extra empty list item", () =>
 test("intentional internal empty lines still receive Markdown prefixes", () => {
   assert.equal(prefixSelectedLines("one\n\ntwo", "> "), "> one\n> \n> two");
 });
+
+
+test("mixed boundary prefixes retain each original line terminator", () => {
+  const source = "first\r\nsecond\nthird\rfour";
+  assert.equal(
+    prefixSelectedLines(source, "> [!TIP]\n> "),
+    "> [!TIP]\r\n> first\r\n> [!TIP]\n> second\n> [!TIP]\r> third\r> [!TIP]\n> four"
+  );
+});
+
+test("mixed newline restoration never reassigns historical endings after line reorder", () => {
+  const source = "alpha\r\nbeta\rgamma\nomega";
+  const reordered = "alpha\ngamma\nbeta\nomega";
+  assert.equal(preserveMixedNewlines(reordered, source), reordered);
+});
