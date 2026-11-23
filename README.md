@@ -97,6 +97,26 @@ python -m json.tool themes/efss-midnight.json
 ComfyUI integration needs a manual smoke test in your local installation: restart, add a note, save/reload workflow, edit/cancel/apply, connect Markdown output to a STRING input, and switch theme back and forth. CI does not claim to replace this live frontend test.
 
 
+## Mixed newline editing and preservation
+
+The Markdown widget is the sole persisted source. EFSS's editor keeps the
+original source unchanged when the user cancels or applies without edits.
+For uniformly CRLF or CR-terminated documents, editor changes restore that
+original line-ending convention.
+
+For mixed CRLF/CR/LF documents, the editor attempts to retain the original
+terminator at stable line boundaries. Reordered unchanged lines and changed
+line counts are treated as ambiguous: the editor leaves the newly edited
+text's terminators intact rather than assigning historical terminators to
+the wrong lines. Toolbar line-prefix actions use each selected line's
+terminator, including standalone CR and empty internal lines.
+
+**Important limitation:** A textarea does not expose the exact original
+terminator of every edited boundary. When an edit makes boundary identity
+ambiguous, preserving the user's edited text is safer than guessing. Do not
+claim byte-for-byte lossless round-tripping of *modified* mixed-ending
+documents without a real browser test. Unedited Markdown remains authoritative.
+
 ## Integration acceptance checklist
 
 These checks must be performed in a running ComfyUI instance before declaring a stable release. Unit tests only cover isolated Python and Markdown contracts.
