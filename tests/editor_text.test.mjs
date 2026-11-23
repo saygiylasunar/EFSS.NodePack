@@ -111,3 +111,21 @@ test("mixed newline restoration never reassigns historical endings after line re
   const reordered = "alpha\ngamma\nbeta\nomega";
   assert.equal(preserveMixedNewlines(reordered, source), reordered);
 });
+
+
+test("repeated source lines do not cause false movement detection", () => {
+  const source = "repeat\r\nmiddle\rrepeat\nend";
+  const edited = "repeat\nMIDDLE\nrepeat\nend";
+  assert.equal(preserveMixedNewlines(edited, source), "repeat\r\nMIDDLE\rrepeat\nend");
+});
+
+test("moving an unchanged line to a different position rejects newline remapping", () => {
+  const source = "first\r\nsecond\rthird\nlast";
+  const moved = "first\nthird\nsecond\nlast";
+  assert.equal(preserveMixedNewlines(moved, source), moved);
+});
+
+test("mixed-prefix operations preserve an empty internal line without adding a terminal marker", () => {
+  const source = "first\r\n\rsecond\n";
+  assert.equal(prefixSelectedLines(source, "- "), "- first\r\n- \r- second\n");
+});
