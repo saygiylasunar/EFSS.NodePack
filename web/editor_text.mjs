@@ -25,15 +25,25 @@ export function prefixSelectedLines(selection, prefix) {
   const source = String(selection);
   // Toolbar callout prefixes contain embedded newlines. Match the selected
   // document's convention instead of introducing mixed endings.
-  const newline = source.includes("\r\n") ? "\r\n" :
-    source.includes("\r") && !source.includes("\n") ? "\r" : "\n";
-  const adaptedPrefix = String(prefix).replace(/\r\n|\r|\n/g, newline);
-  // A selection ending in a newline has no final content line to prefix.
-  // Avoid appending a dangling Markdown marker outside the selected lines.
   if (!source) return source;
-  return adaptedPrefix + source.replace(/\r\n|\r|\n/g,
-    (boundary, offset) => boundary +
-      (offset + boundary.length < source.length ? adaptedPrefix : ""));
+  const prefixText = String(prefix);
+  const boundaries = [...source.matchAll(/\r\n|\r|\n/g)];
+  const adapt = (boundary) => prefixText.replace(/\r\n|\r|\n/g, boundary);
+  // Use the next actual boundary for each inserted multi-line prefix.
+  // A mixed-ending selection must not be silently converted to CRLF.
+  const firstBoundary = boundaries[0]?.[0] ?? "\n";
+  let result = adapt(firstBoundary) + source.slice(0, boundaries[0]?.index ?? source.length);
+  for (let index = 0; index < boundaries.length; index++) {
+    const match = boundaries[index];
+    const nextStart = match.index + match[0].length;
+    const nextEnd = boundaries[index + 1]?.index ?? source.length;
+    result += match[0];
+    if (nextStart < source.length) {
+      result += adapt(boundaries[index + 1]?.[0] ?? match[0]);
+      result += source.slice(nextStart, nextEnd);
+    }
+  }
+  return result;
 }
 
 
