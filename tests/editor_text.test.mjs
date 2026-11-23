@@ -102,7 +102,7 @@ test("mixed boundary prefixes retain each original line terminator", () => {
   const source = "first\r\nsecond\nthird\rfour";
   assert.equal(
     prefixSelectedLines(source, "> [!TIP]\n> "),
-    "> [!TIP]\r\n> first\r\n> [!TIP]\n> second\n> [!TIP]\r> third\r> [!TIP]\n> four"
+    "> [!TIP]\r\n> first\r\n> [!TIP]\n> second\n> [!TIP]\r> third\r> [!TIP]\r> four"
   );
 });
 
