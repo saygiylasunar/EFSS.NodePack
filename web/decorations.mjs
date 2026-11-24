@@ -30,7 +30,8 @@ const ICON_BY_ID = new Map(ICON_PRESETS.map((icon) => [icon.id, icon]));
 export function nodeIdLabel(node) {
   // IDs are graph-local and may be numbers or strings on modern frontends.
   const id = node?.id;
-  if (id === null || id === undefined || String(id).length === 0) return "Unassigned";
+  if (typeof id === "number" ? !Number.isSafeInteger(id) || id < 0 :
+      typeof id !== "string" || !id.trim() || id === "-1") return "Unassigned";
   return "#" + String(id);
 }
 
