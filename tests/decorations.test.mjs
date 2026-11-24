@@ -198,3 +198,9 @@ test("appearance conflicts fail closed on missing node snapshots", () => {
   assert.equal(appearanceConflict({}, null, { icon: true }), true);
   assert.equal(appearanceConflict({ color: "#000" }, { color: "#111" }, { color: true }), true);
 });
+
+ test("native property rejection is reported without overriding metadata", () => {
+  const node = { properties: { efssNodeIcon: "note" }, setProperty() {} };
+  assert.equal(applyNodeIcon(node, "star"), false);
+  assert.equal(getIcon(node).id, "note");
+});
