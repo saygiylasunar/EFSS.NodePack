@@ -204,3 +204,9 @@ test("appearance conflicts fail closed on missing node snapshots", () => {
   assert.equal(applyNodeIcon(node, "star"), false);
   assert.equal(getIcon(node).id, "note");
 });
+
+test("unassigned and malformed node identifiers are not shown as badges", () => {
+  for (const id of [-1, "-1", NaN, Infinity, {}, true, " ", 1.5]) {
+    assert.equal(nodeIdLabel({ id }), "Unassigned");
+  }
+});
