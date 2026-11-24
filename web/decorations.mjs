@@ -68,7 +68,7 @@ export function applyNodeIcon(node, iconId) {
   } else {
     node.properties.efssNodeIcon = value;
   }
-  return true;
+  return node.properties?.efssNodeIcon === value;
 }
 
 /** Draw a minimal glyph in Classic LiteGraph's title band. */
