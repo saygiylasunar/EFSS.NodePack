@@ -173,7 +173,11 @@ function openAppearanceDialog(node) {
     try {
       if (changeColor) applyColorPreset(node, draftColor);
       if (changeIcon) {
-        applyNodeIcon(node, draftIcon);
+        if (!applyNodeIcon(node, draftIcon)) {
+          status.textContent = "Node rejected the icon change. Close and reopen.";
+          node.setDirtyCanvas?.(true, true);
+          return;
+        }
         installIconRenderer(node);
       }
     } finally {
