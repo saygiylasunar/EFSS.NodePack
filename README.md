@@ -138,3 +138,11 @@ These checks must be performed in a running ComfyUI instance before declaring a 
 ## License
 
 No third-party license is granted by this repository at present. This project does not adopt MIT or GPL by default.
+
+### Appearance edge cases
+
+A node may reject an icon metadata update through its native property callback.
+EFSS reports the rejection rather than forcing the property. If a color was
+also applied, that independent color change may remain; reopen the dialog to
+inspect the current state. Unassigned or malformed node IDs are displayed as
+Unassigned, not as execution indices. The native ID badge remains independent.
