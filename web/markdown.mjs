@@ -31,6 +31,7 @@ export function renderInline(source) {
   text = text.replace(/\[([^\]\n]+)\]\((https?:\/\/[^\s()<>"']+)\)/gi,
     (match, label, url) =>
       /^https?:\/\//i.test(url)
+        && !url.includes(sentinel)
         ? protect('<a href="' + url + '" target="_blank" rel="noopener noreferrer">' + label.replace(tokenPattern, (token, index) => protectedFragments[Number(index)] ?? token) + "</a>")
         : match
   );
