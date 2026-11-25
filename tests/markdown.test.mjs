@@ -128,3 +128,10 @@ test("code placeholders in link destinations do not become anchors", () => {
   const html = renderMarkdown("[label](https://example.com/`code`)");
   assert.doesNotMatch(html, /<a href=/);
 });
+
+
+test("long private-use runs remain literal alongside inline code", () => {
+  const run = "\uE000".repeat(4096);
+  const html = renderMarkdown(run + " `safe`");
+  assert.ok(html.includes(run + " <code>safe</code>"));
+});
