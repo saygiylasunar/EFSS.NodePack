@@ -69,6 +69,8 @@ The preview supports headings, paragraphs, inline **bold** / *italic* / ~~strike
 
 The preview escapes source HTML, rejects unsafe links and never executes code, scripts, remote images or embedded HTML. No CDN, Python package dependency, external JavaScript library or server endpoint is required.
 
+Inline code in HTTP(S) link labels is rendered as escaped code. Link destinations containing protected inline-code fragments are left as text rather than converted into anchors. Private-use Unicode characters remain literal in the preview.
+
 ## Architecture
 
 ```text
