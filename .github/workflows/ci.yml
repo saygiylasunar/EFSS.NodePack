@@ -36,5 +36,4 @@ jobs:
         run: node --test tests/*.test.mjs
       - name: Theme JSON validation
         run: |
-          python -m json.tool themes/efss-midnight.json > /dev/null
-          python -c "import json; p=json.load(open('themes/efss-midnight.json')); assert p['id']=='efss-midnight'; assert {'node_slot','litegraph_base','comfy_base'} <= set(p['colors'])"
+          python -c "import json, pathlib; files = sorted(pathlib.Path('themes').glob('efss-*.json')); assert len(files) >= 5; [(lambda p, f: (p['id'] == f.stem and set(p['colors']) == {'node_slot','litegraph_base','comfy_base'}) or (_ for _ in ()).throw(AssertionError(str(f))))(json.loads(f.read_text(encoding='utf-8')), f) for f in files]; print(f'{len(files)} EFSS palettes validated')"
