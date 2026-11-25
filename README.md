@@ -1,12 +1,12 @@
 # EFSS.NodePack
 
-**A focused Markdown note node and an optional midnight palette for ComfyUI.**
+**A focused Markdown note node, optional node appearance tools, and five opt-in ComfyUI color palettes.**
 
 EFSS.NodePack deliberately keeps the two features independent:
 
 - **EFSS Markdown Note** is a normal Python-backed ComfyUI node. Its source text lives in ComfyUI's native `markdown` widget and is saved with the workflow. Its output is the *original, unmodified* Markdown string. Nothing is parsed on the server.
 - **EFSS Markdown editor** is an optional frontend enhancement. Right-click an EFSS Markdown Note → **Edit EFSS Markdown** for a source editor with safe live preview and small formatting controls. Editing is transactional: **Apply** saves, **Cancel** discards.
-- **EFSS Midnight** is an importable ComfyUI color-palette JSON file. It does **not** automatically replace the user's existing theme or inject site-wide styling.
+- **EFSS Themes** are five independently importable ComfyUI color-palette JSON files. They do **not** automatically replace the user's existing theme or inject site-wide styling.
 
 ## Install
 
@@ -18,7 +18,36 @@ git clone https://github.com/saygiylasunar/EFSS.NodePack.git custom_nodes/EFSS.N
 
 Restart ComfyUI and hard-refresh the browser. Add **EFSS → Notes → EFSS Markdown Note**. Edit using the built-in Markdown field, or right-click the node to open the EFSS editor.
 
-To use the optional theme, open **Settings → Appearance → Color Palette → Load** and select `themes/efss-midnight.json`. Theme selection is a separate, reversible action.
+## EFSS theme collection
+
+The following themes are shipped as **independent, optional palettes**:
+
+| Palette | File | Visual direction |
+| --- | --- | --- |
+| **Midnight** | `themes/efss-midnight.json` | Deep navy / muted teal, the original default dark palette |
+| **Carbon** | `themes/efss-carbon.json` | Minimal charcoal / steel, restrained dark alternative |
+| **Pearl** | `themes/efss-pearl.json` | Light cool grey / ink, a bright workspace |
+| **Moss** | `themes/efss-moss.json` | Forest green / warm sage, a quiet dark workspace |
+| **Aero** | `themes/efss-aero.json` | Bright cyan / glass-inspired blue, retro-futurist color palette |
+
+Open **Settings → Appearance → Color Palette → Load** in ComfyUI and import
+the JSON file you want from the `themes/` directory. The exact wording
+of the import action may differ by ComfyUI frontend version. The chosen
+palette is opt-in; adding EFSS.NodePack to `custom_nodes` does not
+automatically activate a theme or replace a saved preference.
+
+**Aero is a color palette, not a glass-blur effect or CSS theme.** ComfyUI's
+native palette format controls colors, not textures or translucency. For
+consistent behavior and upgrade safety, EFSS does not patch global CSS
+to simulate glass. Switching themes must not change the Markdown source,
+node icon metadata, per-node color overrides, or workflow graph execution.
+
+All five palettes preserve the same native ComfyUI palette section keys.
+CI validates their JSON structures and baseline foreground/background
+contrast. Visual parity on current Classic / Nodes 2.0 frontends still
+requires manual acceptance testing. For the original Midnight, simply
+import `themes/efss-midnight.json`.
+
 
 ## Node appearance: color presets, icons and #IDs
 
@@ -81,7 +110,7 @@ web/decorations_extension.js   Optional per-node appearance dialog and Classic i
 web/decorations.mjs             Pure color/icon model and rendering helpers
 web/decorations.css             Scoped appearance dialog CSS
 web/efss.css                   Scoped dialog CSS (no global theme overrides)
-themes/efss-midnight.json      Optional ComfyUI native palette
+themes/efss-*.json            Five optional native ComfyUI palettes
 tests/                         Python & Node built-in test suites
 .github/workflows/ci.yml       Python/JS/JSON validation
 ```
@@ -93,7 +122,7 @@ Node stability policy: use public ComfyUI extension hooks, do not patch LiteGrap
 ```bash
 python -m unittest discover -s tests -p "test_*.py"
 node --test tests/*.test.mjs
-python -m json.tool themes/efss-midnight.json
+python -m json.tool themes/efss-midnight.json  # or any themes/efss-*.json file
 ```
 
 ComfyUI integration needs a manual smoke test in your local installation: restart, add a note, save/reload workflow, edit/cancel/apply, connect Markdown output to a STRING input, and switch theme back and forth. CI does not claim to replace this live frontend test.
