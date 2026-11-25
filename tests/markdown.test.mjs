@@ -117,3 +117,14 @@ test("private-use characters in Markdown source survive safe preview rendering",
   assert.match(output, /<a href="https:\/\/example.org\/"/);
   assert.equal(input, "\uE000\uE001 **bold** [link](https://example.org/)");
 });
+
+
+test("inline code in link labels is restored without leaking placeholders", () => {
+  const html = renderMarkdown("[`<tag>`](https://example.com)");
+  assert.match(html, /<a href="https:\/\/example\.com"[^>]*><code>&lt;tag&gt;<\/code><\/a>/);
+});
+
+test("code placeholders in link destinations do not become anchors", () => {
+  const html = renderMarkdown("[label](https://example.com/`code`)");
+  assert.doesNotMatch(html, /<a href=/);
+});
