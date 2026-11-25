@@ -1,12 +1,12 @@
 # EFSS.NodePack
 
-**A focused Markdown note node, optional node appearance tools, and five opt-in ComfyUI color palettes.**
+**A focused Markdown note node, optional node appearance tools, and six opt-in ComfyUI color palettes.**
 
 EFSS.NodePack deliberately keeps the two features independent:
 
 - **EFSS Markdown Note** is a normal Python-backed ComfyUI node. Its source text lives in ComfyUI's native `markdown` widget and is saved with the workflow. Its output is the *original, unmodified* Markdown string. Nothing is parsed on the server.
 - **EFSS Markdown editor** is an optional frontend enhancement. Right-click an EFSS Markdown Note → **Edit EFSS Markdown** for a source editor with safe live preview and small formatting controls. Editing is transactional: **Apply** saves, **Cancel** discards.
-- **EFSS Themes** are five independently importable ComfyUI color-palette JSON files. They do **not** automatically replace the user's existing theme or inject site-wide styling.
+- **EFSS Themes** are six independently importable ComfyUI color-palette JSON files. They do **not** automatically replace the user's existing theme or inject site-wide styling.
 
 ## Install
 
@@ -29,6 +29,7 @@ The following themes are shipped as **independent, optional palettes**:
 | **Pearl** | `themes/efss-pearl.json` | Light cool grey / ink, a bright workspace |
 | **Moss** | `themes/efss-moss.json` | Forest green / warm sage, a quiet dark workspace |
 | **Aero** | `themes/efss-aero.json` | Bright cyan / glass-inspired blue, retro-futurist color palette |
+| **Fairy Garden** | `themes/efss-fairy-garden.json` | Dark forest green, lavender-purple nodes, rose-pink blossoms and pastel accents |
 
 Open **Settings → Appearance → Color Palette → Load** in ComfyUI and import
 the JSON file you want from the `themes/` directory. The exact wording
@@ -36,13 +37,20 @@ of the import action may differ by ComfyUI frontend version. The chosen
 palette is opt-in; adding EFSS.NodePack to `custom_nodes` does not
 automatically activate a theme or replace a saved preference.
 
+
+**Fairy Garden** deliberately uses the standard palette format: forest-green
+canvas and menus, purple node title bars, blush-pink links, and pastel input
+slot accents. The theme evokes a colorful flower garden but **does not place
+literal flowers, imagery, wallpaper or animations on the canvas**; those would
+require a separate, opt-in decoration layer and frontend compatibility tests.
+
 **Aero is a color palette, not a glass-blur effect or CSS theme.** ComfyUI's
 native palette format controls colors, not textures or translucency. For
 consistent behavior and upgrade safety, EFSS does not patch global CSS
 to simulate glass. Switching themes must not change the Markdown source,
 node icon metadata, per-node color overrides, or workflow graph execution.
 
-All five palettes preserve the same native ComfyUI palette section keys.
+All six palettes preserve the same native ComfyUI palette section keys.
 CI validates their JSON structures and baseline foreground/background
 contrast. Visual parity on current Classic / Nodes 2.0 frontends still
 requires manual acceptance testing. For the original Midnight, simply
@@ -110,7 +118,7 @@ web/decorations_extension.js   Optional per-node appearance dialog and Classic i
 web/decorations.mjs             Pure color/icon model and rendering helpers
 web/decorations.css             Scoped appearance dialog CSS
 web/efss.css                   Scoped dialog CSS (no global theme overrides)
-themes/efss-*.json            Five optional native ComfyUI palettes
+themes/efss-*.json            Six optional native ComfyUI palettes
 tests/                         Python & Node built-in test suites
 .github/workflows/ci.yml       Python/JS/JSON validation
 ```
