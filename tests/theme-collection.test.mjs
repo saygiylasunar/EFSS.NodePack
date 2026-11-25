@@ -10,10 +10,10 @@ const palettes = names.map((name) => ({
   filename: name,
   data: JSON.parse(readFileSync(join(themesDir, name), "utf8")),
 }));
-const requiredNames = ["efss-aero.json", "efss-carbon.json", "efss-midnight.json", "efss-moss.json", "efss-pearl.json"];
+const requiredNames = ["efss-aero.json", "efss-carbon.json", "efss-fairy-garden.json", "efss-midnight.json", "efss-moss.json", "efss-pearl.json"];
 const base = palettes.find(({ data }) => data.id === "efss-midnight")?.data;
 
-test("all five opt-in EFSS themes are present and independently importable", () => {
+test("all six opt-in EFSS themes are present and independently importable", () => {
   for (const name of requiredNames) assert.ok(names.includes(name), name);
   assert.ok(base, "Midnight remains present");
 });
@@ -23,7 +23,7 @@ test("palette IDs are unique, stable, and match their filenames", () => {
   assert.equal(ids.length, new Set(ids).size);
   for (const { filename, data } of palettes) {
     assert.equal(filename, data.id + ".json");
-    assert.equal(data.name, "EFSS | " + data.id.slice(5).replace(/^./, (c) => c.toUpperCase()));
+    assert.equal(data.name, "EFSS | " + data.id.slice(5).split("-").map((word) => word.charAt(0).toUpperCase() + word.slice(1)).join(" "));
     assert.deepEqual(Object.keys(data.colors).sort(), ["comfy_base", "litegraph_base", "node_slot"].sort());
   }
 });
