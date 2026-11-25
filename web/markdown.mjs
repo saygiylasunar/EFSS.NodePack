@@ -15,8 +15,9 @@ export function renderInline(source) {
   // The source may contain literal private-use codepoints. Choose a token
   // delimiter absent from it so authored text cannot impersonate placeholders.
   const input = String(source);
-  let sentinel = "\uE000";
-  while (input.includes(sentinel)) sentinel += "\uE000";
+  const runs = input.match(/\uE000+/g) ?? [];
+  const longest = runs.reduce((max, run) => Math.max(max, run.length), 0);
+  const sentinel = "\uE000".repeat(longest + 1);
   const tokenPattern = new RegExp(sentinel + "(\\d+)" + sentinel, "g");
   const protect = (html) => {
     const index = protectedFragments.push(html) - 1;
