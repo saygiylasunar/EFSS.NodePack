@@ -25,6 +25,8 @@ export const ICON_PRESETS = Object.freeze([
   Object.freeze({ id: "output", name: "Output", glyph: "↗" }),
   Object.freeze({ id: "warning", name: "Warning", glyph: "⚠" }),
   Object.freeze({ id: "process", name: "Process", glyph: "⚙" }),
+  Object.freeze({ id: "flower", name: "Flower", glyph: "✿" }),
+  Object.freeze({ id: "sparkle", name: "Sparkle", glyph: "✦" }),
 ]);
 
 const COLOR_BY_ID = new Map(COLOR_PRESETS.map((preset) => [preset.id, preset]));
