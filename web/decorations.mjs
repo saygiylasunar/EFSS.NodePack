@@ -12,6 +12,9 @@ export const COLOR_PRESETS = Object.freeze([
   Object.freeze({ id: "amber", name: "Amber", color: "#90673d", bgcolor: "#382a1c" }),
   Object.freeze({ id: "rose", name: "Rose", color: "#89546e", bgcolor: "#37202d" }),
   Object.freeze({ id: "forest", name: "Forest", color: "#4c795f", bgcolor: "#1d3429" }),
+  Object.freeze({ id: "orchid", name: "Orchid", color: "#794567", bgcolor: "#281e2c" }),
+  Object.freeze({ id: "blossom", name: "Blossom", color: "#8b496b", bgcolor: "#382331" }),
+  Object.freeze({ id: "fern", name: "Fern", color: "#38634b", bgcolor: "#192b20" }),
 ]);
 
 export const ICON_PRESETS = Object.freeze([
