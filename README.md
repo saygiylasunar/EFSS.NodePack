@@ -67,8 +67,8 @@ ComfyUI nodes**. Right-click a node → **EFSS · Node appearance…**.
   The colors use native LiteGraph `node.color` and `node.bgcolor` fields, so
   they persist in workflow JSON and still render without EFSS.NodePack installed.
   Your pre-existing custom colors remain untouched until you choose a swatch.
-- **Node icon:** choose Note, Favorite, Model, Image, Output, Warning or Process,
-  or select None. Icons use an allowlisted Unicode glyph, with only the
+- **Node icon:** choose Note, Favorite, Model, Image, Output, Warning, Process,
+  Flower and Sparkle, or select None. Icons use an allowlisted Unicode glyph, with only the
   selected icon ID stored as `node.properties.efssNodeIcon`. The icon is drawn
   on the **Classic LiteGraph** title bar with a node-local drawing callback;
   it does not edit node titles or patch global prototypes. **Nodes 2.0 / Vue
@@ -83,7 +83,7 @@ ComfyUI nodes**. Right-click a node → **EFSS · Node appearance…**.
 Color and icon selections are applied only after **Apply**. **Cancel** leaves
 the node unchanged. Changes to the same node made outside the dialog while
 it is open trigger an overwrite warning. The two appearance features are
-independent of the Markdown node and optional Midnight theme.
+independent of the Markdown node and all optional themes, including Fairy Garden.
 
 ### Appearance compatibility notes
 
