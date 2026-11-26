@@ -2,7 +2,8 @@ import assert from "node:assert/strict";
 import test from "node:test";
 import { readdirSync, readFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
-import { dirname, join } from "node:path";
+import { join } from "node:path";
+import { COLOR_PRESETS, ICON_PRESETS } from "../web/decorations.mjs";
 
 const themesDir = fileURLToPath(new URL("../themes/", import.meta.url));
 const names = readdirSync(themesDir).filter((file) => file.endsWith(".json")).sort();
@@ -93,4 +94,12 @@ test("new palettes have distinct canvas and node colors", () => {
   const nodeValues = palettes.map(({ data }) => data.colors.litegraph_base.NODE_DEFAULT_BGCOLOR);
   assert.equal(new Set(canvasValues).size, canvasValues.length);
   assert.equal(new Set(nodeValues).size, nodeValues.length);
+});
+
+ test("Fairy Garden is independent of native node overrides and icon metadata", () => {
+  const fairy = palettes.find(({ data }) => data.id === "efss-fairy-garden").data;
+  assert.deepEqual(Object.keys(fairy).sort(), ["colors", "id", "name"]);
+  assert.ok(COLOR_PRESETS.some(p => p.id === "orchid"));
+  assert.ok(ICON_PRESETS.some(p => p.id === "flower"));
+  assert.doesNotMatch(JSON.stringify(fairy), /efssNodeIcon|setColorOption|onDrawTitle/);
 });
