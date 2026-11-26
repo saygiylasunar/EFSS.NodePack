@@ -63,7 +63,7 @@ EFSS.NodePack now includes an **optional node appearance dialog for all ordinary
 ComfyUI nodes**. Right-click a node → **EFSS · Node appearance…**.
 
 - **Node color:** choose **Noir**, **Teal**, **Azure**, **Amethyst**, **Amber**,
-  **Rose** or **Forest**. **Default** removes header/body color overrides.
+  **Rose**, **Forest**, **Orchid**, **Blossom** or **Fern**. **Default** removes header/body color overrides.
   The colors use native LiteGraph `node.color` and `node.bgcolor` fields, so
   they persist in workflow JSON and still render without EFSS.NodePack installed.
   Your pre-existing custom colors remain untouched until you choose a swatch.
