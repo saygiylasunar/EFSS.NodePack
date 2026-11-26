@@ -105,6 +105,23 @@ test("icon metadata round-trips as a normal workflow node property", () => {
   assert.equal(restored.title, "KSampler");
 });
 
+test("botanical presets and glyphs survive workflow JSON without theme state", () => {
+  for (const color of ["orchid", "blossom", "fern"]) {
+    for (const icon of ["flower", "sparkle"]) {
+      const node = fixture();
+      assert.equal(applyColorPreset(node, color), true);
+      assert.equal(applyNodeIcon(node, icon), true);
+      const restored = JSON.parse(JSON.stringify(node));
+      assert.equal(getColorPreset(restored).id, color);
+      assert.equal(getIcon(restored).id, icon);
+      assert.equal(restored.properties.custom, "unchanged");
+      assert.equal(restored.title, "KSampler");
+      assert.equal(applyNodeIcon(restored, null), true);
+      assert.equal(getColorPreset(restored).id, color);
+    }
+  }
+});
+
 test("renderer is inert without icons and draws only to saved canvas context", () => {
   const calls = [];
   const ctx = {
