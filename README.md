@@ -87,6 +87,11 @@ independent of the Markdown node and all optional themes, including Fairy Garden
 
 ### Appearance compatibility notes
 
+- The node-local Classic title callback forwards all original arguments and
+  preserves the original return value and exceptions. Missing canvas methods
+  skip EFSS drawing; decoration-only drawing failures do not interrupt native
+  drawing. These isolated contracts do not establish live frontend compatibility.
+
 - No extra Python package, external font pack, SVG fetch or CDNs.
 - No automatic recoloring, no global prototype modifications, no new widgets
   on existing nodes. Icon rendering is installed only on nodes with an EFSS
