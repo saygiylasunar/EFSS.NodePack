@@ -5,7 +5,7 @@
 import { app } from "../../scripts/app.js";
 import {
   COLOR_PRESETS, ICON_PRESETS, nodeIdLabel, getIcon,
-  getColorPreset, applyColorPreset, applyNodeIcon, drawNodeIcon,
+  getColorPreset, applyColorPreset, applyNodeIcon, composeTitleRenderer,
   appearanceConflict,
 } from "./decorations.mjs";
 
@@ -15,12 +15,7 @@ const CSS_ID = "efss-appearance-styles";
 
 function installIconRenderer(node) {
   if (!node || installed.has(node) || !getIcon(node)) return;
-  const original = node.onDrawTitle;
-  node.onDrawTitle = function (ctx) {
-    const result = typeof original === "function" ? original.call(this, ctx) : undefined;
-    drawNodeIcon(this, ctx);
-    return result;
-  };
+  node.onDrawTitle = composeTitleRenderer(node.onDrawTitle);
   installed.add(node);
 }
 
