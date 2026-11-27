@@ -81,6 +81,8 @@ export function applyNodeIcon(node, iconId) {
 export function drawNodeIcon(node, ctx) {
   const icon = getIcon(node);
   if (!icon || !ctx) return false;
+  const methods = ["save", "restore", "beginPath", "arc", "fill", "stroke", "fillText"];
+  if (!methods.every((method) => typeof ctx[method] === "function")) return false;
   // Modern LiteGraph may expose a typed array for node dimensions.
   const width = Number(node?.renderingSize?.[0] ?? node?.size?.[0]);
   if (!Number.isFinite(width) || width < 70) return false;
