@@ -2,7 +2,7 @@ import assert from "node:assert/strict";
 import test from "node:test";
 import {
   COLOR_PRESETS, ICON_PRESETS, nodeIdLabel, getIcon, getColorPreset,
-  applyColorPreset, applyNodeIcon, drawNodeIcon, appearanceConflict,
+  applyColorPreset, applyNodeIcon, drawNodeIcon, appearanceConflict, composeTitleRenderer,
 } from "../web/decorations.mjs";
 
 function fixture() {
@@ -235,4 +235,19 @@ test("unassigned and malformed node identifiers are not shown as badges", () => 
   assert.equal(drawNodeIcon(node, { save() { saved = true; } }), false);
   assert.equal(saved, false);
   assert.equal(drawNodeIcon(node, null), false);
+});
+
+test("title wrapper preserves receiver, arguments, return and native exceptions", () => {
+  const node = fixture();
+  applyNodeIcon(node, "star");
+  let restored = false;
+  const ctx = { save() {}, restore() { restored = true; }, beginPath() { throw Error("decoration"); }, arc() {}, fill() {}, stroke() {}, fillText() {} };
+  const wrapped = composeTitleRenderer(function (...args) {
+    assert.equal(this, node);
+    assert.deepEqual(args, [ctx, 42]);
+    return "native result";
+  });
+  assert.equal(wrapped.call(node, ctx, 42), "native result");
+  assert.equal(restored, true);
+  assert.throws(() => composeTitleRenderer(() => { throw Error("native failure"); }).call(node, ctx), /native failure/);
 });
