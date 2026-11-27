@@ -122,3 +122,16 @@ export function appearanceConflict(node, initial, { color = false, icon = false 
     (icon && node.properties?.efssNodeIcon !== initial.icon)
   );
 }
+
+/** Compose a node-local title callback without changing native callback semantics. */
+export function composeTitleRenderer(original) {
+  return function (...args) {
+    const result = typeof original === "function" ? original.apply(this, args) : undefined;
+    try {
+      drawNodeIcon(this, args[0]);
+    } catch {
+      // Optional decoration must not interrupt native graph drawing.
+    }
+    return result;
+  };
+}
