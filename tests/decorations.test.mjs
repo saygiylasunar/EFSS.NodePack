@@ -227,3 +227,12 @@ test("unassigned and malformed node identifiers are not shown as badges", () => 
     assert.equal(nodeIdLabel({ id }), "Unassigned");
   }
 });
+
+ test("icon renderer skips incomplete canvas contexts without side effects", () => {
+  const node = fixture();
+  applyNodeIcon(node, "flower");
+  let saved = false;
+  assert.equal(drawNodeIcon(node, { save() { saved = true; } }), false);
+  assert.equal(saved, false);
+  assert.equal(drawNodeIcon(node, null), false);
+});
