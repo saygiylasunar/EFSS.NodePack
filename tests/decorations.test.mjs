@@ -260,3 +260,16 @@ test("malformed dimensions never enter canvas drawing", () => {
     assert.equal(drawNodeIcon({ size: [width, 100], properties: { efssNodeIcon: "flower" } }, ctx), false);
   }
 });
+
+test("title wrapper without an original callback remains inert on undecorated nodes", () => {
+  const node = fixture();
+  const ctx = { save() { assert.fail("undecorated node"); } };
+  assert.equal(composeTitleRenderer(undefined).call(node, ctx), undefined);
+});
+
+test("title wrapper isolates a failing canvas save without calling restore", () => {
+  const node = fixture();
+  applyNodeIcon(node, "flower");
+  const ctx = { save() { throw Error("lost context"); }, restore() { assert.fail("unmatched restore"); }, beginPath() {}, arc() {}, fill() {}, stroke() {}, fillText() {} };
+  assert.equal(composeTitleRenderer(() => 17).call(node, ctx), 17);
+});
