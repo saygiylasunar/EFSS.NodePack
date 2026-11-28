@@ -188,6 +188,7 @@ test("renderer always restores canvas state after a drawing failure", () => {
   const ctx = {
     save() {}, restore() { restored = true; },
     beginPath() { throw new Error("canvas lost"); },
+    arc() {}, fill() {}, stroke() {}, fillText() {},
   };
   assert.throws(() => drawNodeIcon({
     size: [150, 100], properties: { efssNodeIcon: "star" },
