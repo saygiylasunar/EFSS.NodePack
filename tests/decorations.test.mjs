@@ -253,3 +253,10 @@ test("title wrapper preserves receiver, arguments, return and native exceptions"
   assert.equal(restored, true);
   assert.throws(() => composeTitleRenderer(() => { throw Error("native failure"); }).call(node, ctx), /native failure/);
 });
+
+test("malformed dimensions never enter canvas drawing", () => {
+  const ctx = { save() { assert.fail("invalid width"); }, restore() {}, beginPath() {}, arc() {}, fill() {}, stroke() {}, fillText() {} };
+  for (const width of ["180", NaN, Infinity, -1, Symbol("width"), {}]) {
+    assert.equal(drawNodeIcon({ size: [width, 100], properties: { efssNodeIcon: "flower" } }, ctx), false);
+  }
+});
