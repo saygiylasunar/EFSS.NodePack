@@ -145,7 +145,8 @@ test("renderer is inert without icons and draws only to saved canvas context", (
 
 test("very narrow nodes skip icon rendering without crashing", () => {
   const node = { properties: { efssNodeIcon: "warning" }, size: [45, 85] };
-  assert.equal(drawNodeIcon(node, {}), false);
+  const ctx = { save() { assert.fail("narrow node must not draw"); }, restore() {}, beginPath() {}, arc() {}, fill() {}, stroke() {}, fillText() {} };
+  assert.equal(drawNodeIcon(node, ctx), false);
 });
 
 
