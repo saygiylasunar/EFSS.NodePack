@@ -190,3 +190,7 @@ EFSS reports the rejection rather than forcing the property. If a color was
 also applied, that independent color change may remain; reopen the dialog to
 inspect the current state. Unassigned or malformed node IDs are displayed as
 Unassigned, not as execution indices. The native ID badge remains independent.
+
+### Classic icon dimension guard
+
+Icon drawing requires a complete Canvas 2D drawing interface and a finite numeric node width of at least 70. Typed-array dimensions remain supported; malformed dimensions are skipped without coercion. Optional drawing failures do not suppress native callback errors or return values. These contracts are unit-tested, not a substitute for live Classic or Nodes 2.0 validation.
